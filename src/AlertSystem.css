@@ -1,0 +1,170 @@
+/* ═══════════════════════════════════════════════════════════
+   GAMORA — Custom Alert / Toast System
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── TOAST ──────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  min-width: 280px;
+  max-width: 380px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14);
+  pointer-events: all;
+  animation: toastIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(60px) scale(.9); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.toast-success { background: #ecfdf5; border: 1.5px solid #6ee7b7; color: #065f46; }
+.toast-error   { background: #fef2f2; border: 1.5px solid #fca5a5; color: #b91c1c; }
+.toast-warning { background: #fffbeb; border: 1.5px solid #fcd34d; color: #92400e; }
+.toast-info    { background: #eff6ff; border: 1.5px solid #93c5fd; color: #1e40af; }
+
+.toast-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.toast-success .toast-icon { background: #d1fae5; }
+.toast-error   .toast-icon { background: #fee2e2; }
+.toast-warning .toast-icon { background: #fef3c7; }
+.toast-info    .toast-icon { background: #dbeafe; }
+
+.toast-msg { flex: 1; line-height: 1.4; }
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: .5;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: opacity .15s;
+  flex-shrink: 0;
+}
+.toast-close:hover { opacity: 1; }
+
+/* ── DIALOG ─────────────────────────────────────────────── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: dialogBg .2s ease forwards;
+}
+
+@keyframes dialogBg {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dialog-box {
+  background: #fff;
+  border-radius: 22px;
+  padding: 36px 32px 28px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 24px 48px rgba(0,0,0,.2);
+  animation: dialogIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: scale(.85) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.dialog-icon-wrap {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.dialog-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px;
+}
+
+.dialog-message {
+  font-size: 0.92rem;
+  color: #64748b;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.dialog-btn {
+  padding: 11px 28px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: inherit;
+}
+
+.dialog-btn-ok {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(99,102,241,.35);
+  min-width: 120px;
+}
+.dialog-btn-ok:hover { opacity: .9; transform: translateY(-1px); }
+
+.dialog-btn-confirm {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(239,68,68,.35);
+}
+.dialog-btn-confirm:hover { opacity: .9; transform: translateY(-1px); }
+
+.dialog-btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+}
+.dialog-btn-cancel:hover { background: #e2e8f0; }

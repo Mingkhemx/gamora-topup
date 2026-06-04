@@ -1,0 +1,804 @@
+/* =============================================
+   PRODUCT DETAIL - Takapedia Style (Dark Theme)
+   ============================================= */
+
+.pd-root {
+  background-color: #f8fafc;
+  color: #1e293b;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── HERO BANNER ─── */
+.pd-hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 40%, #cbd5e1 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.pd-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 50%, rgba(100, 80, 200, 0.3) 0%, transparent 70%);
+}
+
+.pd-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+  z-index: 1;
+}
+
+.pd-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.pd-hero-text {
+  max-width: 520px;
+}
+
+.pd-topup-label {
+  font-size: 1rem;
+  color: #475569;
+  margin-bottom: 0.3rem;
+}
+
+.pd-hero-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #d97706;
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.pd-hero-desc {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.pd-hero-btn {
+  background: #f0c000;
+  color: #f8fafc;
+  border: none;
+  padding: 0.7rem 2rem;
+  border-radius: 25px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pd-hero-btn:hover {
+  background: #ffd700;
+  transform: translateY(-2px);
+}
+
+.pd-hero-art {
+  width: 350px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pd-hero-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 40px rgba(150, 100, 255, 0.5));
+}
+
+/* ─── INFO BAR ─── */
+.pd-info-bar {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 1.2rem 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.pd-info-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pd-game-thumb {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid #d97706;
+  flex-shrink: 0;
+  transform: perspective(800px) rotateY(-18deg) rotateX(10deg);
+  box-shadow: 8px 12px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+
+.pd-game-thumb:hover {
+  transform: perspective(800px) rotateY(0deg) rotateX(0deg) scale(1.05);
+  box-shadow: 12px 18px 25px rgba(0, 0, 0, 0.25);
+}
+
+.pd-game-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pd-game-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.pd-game-publisher {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.8rem;
+}
+
+.pd-game-badges {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pd-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+/* ─── GUARANTEE BAR ─── */
+.pd-guarantee-bar {
+  background: #f1f5f9;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  padding: 0.8rem 2rem;
+  flex-wrap: wrap;
+}
+
+.pd-guarantee-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ─── MAIN LAYOUT ─── */
+.pd-main {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  align-items: start;
+}
+
+/* ─── STEP CARDS ─── */
+.pd-step-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.pd-step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.pd-step-num {
+  background: #f0c000;
+  color: #f8fafc;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.pd-step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ─── FORM ─── */
+.pd-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.pd-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pd-form-group label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.pd-input {
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  color: #1e293b;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.pd-input:focus {
+  border-color: #d97706;
+}
+.pd-input::placeholder {
+  color: #4a5568;
+}
+
+/* ─── PACKAGES GRID ─── */
+.pd-packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.pd-pkg-card {
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.pd-pkg-card:hover {
+  border-color: #d97706;
+  background: #f1f5f9;
+}
+
+.pd-pkg-card.selected {
+  border-color: #d97706;
+  background: rgba(240, 192, 0, 0.08);
+}
+
+.pd-pkg-label {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #f0c000;
+  color: #f8fafc;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.pd-pkg-icon {
+  font-size: 1.2rem;
+}
+
+.pd-pkg-diamonds {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.pd-pkg-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.pd-pkg-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  background: rgba(240,192,0,0.1);
+  border: 1px solid rgba(217,119,6,0.3);
+  border-radius: 6px;
+  color: #d97706;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.2s;
+}
+.pd-pkg-btn:hover {
+  background: rgba(240,192,0,0.2);
+}
+.pd-pkg-card.selected .pd-pkg-btn {
+  background: #f0c000;
+  color: #f8fafc;
+  border-color: #d97706;
+}
+
+/* ─── QTY ─── */
+.pd-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pd-qty-input {
+  flex: 1;
+}
+
+.pd-qty-btn {
+  background: #f0c000;
+  border: none;
+  border-radius: 8px;
+  color: #f8fafc;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 800;
+  transition: opacity 0.2s;
+}
+.pd-qty-btn:hover {
+  opacity: 0.85;
+}
+
+/* ─── PROMO ─── */
+.pd-promo-row {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.pd-promo-input {
+  flex: 1;
+}
+
+.pd-promo-btn {
+  background: #f0c000;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1.2rem;
+  color: #f8fafc;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pd-promo-avail {
+  background: rgba(240,192,0,0.12);
+  border: 1px solid rgba(217,119,6,0.3);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  color: #d97706;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── PAYMENT ─── */
+.pd-payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pd-payment-item {
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.pd-payment-item:hover,
+.pd-payment-item.selected {
+  border-color: #d97706;
+}
+
+.pd-payment-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pd-pay-icon {
+  font-size: 1.4rem;
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pd-pay-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pd-pay-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pd-pay-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.pd-pay-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.pd-pay-best {
+  background: #f0c000;
+  color: #f8fafc;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.pd-pay-flat {
+  background: rgba(240,192,0,0.15);
+  color: #d97706;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(217,119,6,0.3);
+}
+
+.pd-payment-group {
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.pd-pay-group-name {
+  color: #475569;
+}
+
+.pd-pay-sub-list {
+  padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* ─── WHATSAPP ─── */
+.pd-wa-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.pd-wa-flag {
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  padding: 0.7rem 0.8rem;
+  color: #1e293b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.pd-wa-input {
+  border-radius: 0 8px 8px 0 !important;
+  flex: 1;
+}
+
+.pd-input-note {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+.pd-wa-tip {
+  background: rgba(79, 195, 247, 0.08);
+  border: 1px solid rgba(79, 195, 247, 0.2);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-size: 0.78rem;
+  color: #90cdf4;
+  margin-top: 0.8rem;
+  line-height: 1.4;
+}
+
+/* ─── DESC & FAQ ─── */
+.pd-desc-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.pd-desc-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #d97706;
+  margin-bottom: 1rem;
+}
+
+.pd-desc-text {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.pd-faq-section {
+  margin-bottom: 2rem;
+}
+
+.pd-faq-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.pd-faq-item {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+
+.pd-faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.pd-faq-a {
+  padding: 0 1.2rem 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.6;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 0.8rem;
+}
+
+/* ─── SIDEBAR ─── */
+.pd-sidebar {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pd-sidebar-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+
+/* Rating */
+.pd-rating-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.pd-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.pd-rating-score {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #d97706;
+  line-height: 1;
+}
+
+.pd-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.pd-rating-count {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* Bantuan */
+.pd-bantuan-card {
+  border-color: rgba(240,192,0,0.15);
+}
+
+.pd-bantuan-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pd-bantuan-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.pd-bantuan-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* Order */
+.pd-order-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.pd-order-empty {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  padding: 1.5rem 0;
+}
+
+.pd-order-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pd-order-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.pd-order-label {
+  color: #64748b;
+}
+
+.pd-order-val {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.pd-order-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+  margin: 0.3rem 0;
+}
+
+.pd-order-total {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #d97706;
+}
+
+.pd-order-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pd-cart-btn {
+  width: 100%;
+  background: transparent;
+  border: 2px solid #d97706;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #d97706;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.pd-cart-btn:hover:not(:disabled) {
+  background: rgba(217, 119, 6, 0.1);
+  transform: translateY(-2px);
+}
+.pd-cart-btn:disabled {
+  border-color: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.pd-order-btn {
+  width: 100%;
+  background: #f0c000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.pd-order-btn:hover:not(:disabled) {
+  background: #ffd700;
+  transform: translateY(-2px);
+}
+.pd-order-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}

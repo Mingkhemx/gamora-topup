@@ -1,0 +1,319 @@
+/* ═══════════════════════════════════════════════════════════
+   GAMORA — Payment Page
+   ═══════════════════════════════════════════════════════════ */
+
+.pay-root {
+  min-height: 100vh;
+  background: #f0f2f8;
+  padding: 80px 0 60px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.pay-header {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pay-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: inherit;
+}
+.pay-back-btn:hover { background: #f1f5f9; border-color: #6366f1; color: #4f46e5; }
+
+.pay-header-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* ── Body layout ────────────────────────────────────────── */
+.pay-body {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .pay-body { grid-template-columns: 1fr; }
+}
+
+/* ── Card ───────────────────────────────────────────────── */
+.pay-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 24px rgba(99,102,241,.08);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.pay-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 18px;
+}
+
+/* ── Order list ─────────────────────────────────────────── */
+.pay-order-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+
+.pay-order-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.pay-order-img {
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.pay-order-info { flex: 1; }
+.pay-order-game { font-size: 0.9rem; font-weight: 700; color: #0f172a; }
+.pay-order-pkg  { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+.pay-order-price { font-size: 0.9rem; font-weight: 800; color: #6366f1; flex-shrink: 0; }
+
+/* ── Promo ──────────────────────────────────────────────── */
+.pay-promo-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pay-promo-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #6366f1;
+  outline: none;
+  font-family: inherit;
+  transition: border .2s;
+}
+.pay-promo-input:focus { border-color: #818cf8; }
+
+.pay-promo-btn {
+  padding: 10px 18px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .18s;
+}
+.pay-promo-btn:hover { background: #ddd6fe; }
+
+.pay-promo-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #d1fae5;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 12px;
+}
+.pay-promo-applied button {
+  background: none; border: none; color: #065f46;
+  cursor: pointer; font-size: 0.9rem; padding: 0 4px;
+}
+
+/* ── Price breakdown ────────────────────────────────────── */
+.pay-price-breakdown {
+  border-top: 1.5px dashed #e2e8f0;
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pay-price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.pay-price-row.discount { color: #22c55e; font-weight: 600; }
+
+.pay-price-row.total {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  padding-top: 8px;
+  border-top: 1.5px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+.pay-price-row.total span:last-child { color: #6366f1; }
+
+.pay-secure-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+/* ── Payment methods ────────────────────────────────────── */
+.pay-method-group { margin-bottom: 20px; }
+
+.pay-method-group-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 8px;
+}
+
+.pay-method-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all .18s;
+  background: #fff;
+}
+.pay-method-row:hover { border-color: #818cf8; background: #faf5ff; }
+.pay-method-row.selected { border-color: #6366f1; background: #f5f3ff; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+
+.pay-method-row input[type="radio"] { display: none; }
+
+.pay-method-logo {
+  width: 44px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.pay-method-logo img {
+  max-width: 44px; max-height: 28px;
+  object-fit: contain;
+}
+
+.pay-method-info { flex: 1; }
+.pay-method-name { font-size: 0.88rem; font-weight: 700; color: #0f172a; }
+.pay-method-fee  { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+
+/* ── Pay button ─────────────────────────────────────────── */
+.pay-btn-primary {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(99,102,241,.4);
+  transition: all .2s;
+  font-family: inherit;
+}
+.pay-btn-primary:hover:not(.disabled) { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(99,102,241,.45); }
+.pay-btn-primary.disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Success ────────────────────────────────────────────── */
+.pay-success-wrap {
+  max-width: 480px;
+  margin: 60px auto 0;
+  padding: 40px 32px;
+  background: #fff;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.10);
+}
+
+.pay-success-icon { margin-bottom: 16px; }
+
+.pay-success-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.pay-success-sub {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.pay-success-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pay-success-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  text-align: left;
+}
+.pay-success-item img {
+  width: 40px; height: 40px;
+  border-radius: 8px; object-fit: cover; flex-shrink: 0;
+}
+.pay-success-game { font-size: 0.88rem; font-weight: 700; color: #0f172a; }
+.pay-success-pkg  { font-size: 0.75rem; color: #64748b; }
+.pay-success-price { font-size: 0.88rem; font-weight: 800; color: #6366f1; margin-left: auto; }
+
+.pay-success-total {
+  font-size: 1rem;
+  color: #64748b;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+}
+.pay-success-total strong { color: #0f172a; font-size: 1.1rem; }
+
+/* ── Processing ─────────────────────────────────────────── */
+.pay-processing-icon { margin-bottom: 20px; }
+@keyframes paySpin { to { transform: rotate(360deg); } }
+.pay-spin { animation: paySpin 1.2s linear infinite; display: block; }

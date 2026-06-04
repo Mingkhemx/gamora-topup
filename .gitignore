@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Environment variables - JANGAN DI-COMMIT
+.env
+.env.local
+.env.production
+.env.*
+
+# File tidak relevan
+public/payment/Cisco*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
