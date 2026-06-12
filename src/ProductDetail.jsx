@@ -4,52 +4,108 @@ import './ProductDetail.css';
 import { supabase } from './supabaseClient';
 import { toast } from './AlertSystem.jsx';
 
-const mlbbPackages = [
-  { id: 1, diamonds: '5 (+1)', total: '6', price: 'Rp 1.428', label: '' },
-  { id: 2, diamonds: '12 (+2)', total: '14', price: 'Rp 3.000', label: '' },
-  { id: 3, diamonds: '19 (+5)', total: '24', price: 'Rp 4.999', label: '' },
-  { id: 4, diamonds: '28 (+7)', total: '35', price: 'Rp 7.000', label: '' },
-  { id: 5, diamonds: '55 (+10)', total: '65', price: 'Rp 13.999', label: '' },
-  { id: 6, diamonds: '86 (+20)', total: '106', price: 'Rp 20.000', label: '' },
-  { id: 7, diamonds: '172 (+35)', total: '207', price: 'Rp 40.000', label: '' },
-  { id: 8, diamonds: '257 (+55)', total: '312', price: 'Rp 60.000', label: '' },
-  { id: 9, diamonds: '344 (+70)', total: '414', price: 'Rp 79.999', label: '' },
-  { id: 10, diamonds: '429 (+86)', total: '515', price: 'Rp 99.000', label: '' },
-  { id: 11, diamonds: '514 (+103)', total: '617', price: 'Rp 120.000', label: '' },
-  { id: 12, diamonds: '600 (+120)', total: '720', price: 'Rp 139.000', label: '' },
-  { id: 13, diamonds: '706 (+141)', total: '847', price: 'Rp 163.000', label: '' },
-  { id: 14, diamonds: '878 (+176)', total: '1054', price: 'Rp 203.000', label: '' },
-  { id: 15, diamonds: '963 (+193)', total: '1156', price: 'Rp 222.000', label: '' },
-  { id: 16, diamonds: '1050 (+210)', total: '1260', price: 'Rp 242.000', label: '' },
-  { id: 17, diamonds: '1195 (+239)', total: '1434', price: 'Rp 276.000', label: '' },
-  { id: 18, diamonds: '1412 (+283)', total: '1695', price: 'Rp 326.000', label: '' },
-  { id: 19, diamonds: '2195 (+439)', total: '2634', price: 'Rp 507.000', label: '' },
-  { id: 20, diamonds: '2901 (+580)', total: '3481', price: 'Rp 671.000', label: '' },
-  { id: 21, diamonds: '3688 (+738)', total: '4426', price: 'Rp 853.000', label: '' },
-  { id: 22, diamonds: '4829 (+966)', total: '5795', price: 'Rp 1.117.000', label: '' },
-  { id: 23, diamonds: '5532 (+1106)', total: '6638', price: 'Rp 1.280.000', label: '' },
-  { id: 24, diamonds: 'Weekly Diamond Pass', total: 'WDP', price: 'Rp 21.500', label: 'Special' },
-  { id: 25, diamonds: 'Twilight Pass', total: 'TP', price: 'Rp 115.000', label: 'Special' },
-];
-
-const paymentMethods = {
-  coinpedia: { name: 'Coinpedia', desc: 'Promo: 0,00 → 0pt per rp1', isBest: true, icon: '🪙' },
-  qris: {
-    name: 'QRIS (All Payment Method)',
-    desc: 'Harga: 0,00 → 0pt per rp1',
-    isBest: false,
-    icon: '📱',
-    subIcons: ['QRIS']
-  }
+// ── Paket default per game (fallback kalau belum ada di Supabase) ─
+const defaultPackages = {
+  'mobile legends': [
+    { id: 1,  name: '5 (+1) Diamonds',    price: 1428,    label: '' },
+    { id: 2,  name: '12 (+2) Diamonds',   price: 3000,    label: '' },
+    { id: 3,  name: '19 (+5) Diamonds',   price: 4999,    label: '' },
+    { id: 4,  name: '28 (+7) Diamonds',   price: 7000,    label: '' },
+    { id: 5,  name: '55 (+10) Diamonds',  price: 13999,   label: '' },
+    { id: 6,  name: '86 (+20) Diamonds',  price: 20000,   label: '🔥 Populer' },
+    { id: 7,  name: '172 (+35) Diamonds', price: 40000,   label: '' },
+    { id: 8,  name: '257 (+55) Diamonds', price: 60000,   label: '' },
+    { id: 9,  name: '344 (+70) Diamonds', price: 79999,   label: '' },
+    { id: 10, name: '429 (+86) Diamonds', price: 99000,   label: '' },
+    { id: 11, name: '514 (+103) Diamonds',price: 120000,  label: '' },
+    { id: 12, name: '600 (+120) Diamonds',price: 139000,  label: '💎 Best Value' },
+    { id: 13, name: '706 (+141) Diamonds',price: 163000,  label: '' },
+    { id: 14, name: '878 (+176) Diamonds',price: 203000,  label: '' },
+    { id: 15, name: '1050 (+210) Diamonds',price: 242000, label: '' },
+    { id: 16, name: '2195 (+439) Diamonds',price: 507000, label: '' },
+    { id: 17, name: '4829 (+966) Diamonds',price: 1117000,label: '' },
+    { id: 18, name: 'Weekly Diamond Pass', price: 21500,  label: '✨ Special' },
+    { id: 19, name: 'Twilight Pass',        price: 115000, label: '✨ Special' },
+  ],
+  'free fire': [
+    { id: 1,  name: '5 Diamonds',    price: 1000,  label: '' },
+    { id: 2,  name: '12 Diamonds',   price: 2400,  label: '' },
+    { id: 3,  name: '50 Diamonds',   price: 9999,  label: '' },
+    { id: 4,  name: '70 Diamonds',   price: 13999, label: '🔥 Populer' },
+    { id: 5,  name: '140 Diamonds',  price: 27999, label: '' },
+    { id: 6,  name: '355 Diamonds',  price: 69999, label: '💎 Best Value' },
+    { id: 7,  name: '720 Diamonds',  price: 139999,label: '' },
+    { id: 8,  name: '1450 Diamonds', price: 279999,label: '' },
+    { id: 9,  name: 'Weekly Membership', price: 29999, label: '✨ Special' },
+    { id: 10, name: 'Monthly Membership', price: 109999, label: '✨ Special' },
+  ],
+  'genshin impact': [
+    { id: 1,  name: '60 Genesis Crystals',   price: 15000,  label: '' },
+    { id: 2,  name: '300 Genesis Crystals',  price: 75000,  label: '🔥 Populer' },
+    { id: 3,  name: '980 Genesis Crystals',  price: 240000, label: '💎 Best Value' },
+    { id: 4,  name: '1980 Genesis Crystals', price: 480000, label: '' },
+    { id: 5,  name: '3280 Genesis Crystals', price: 780000, label: '' },
+    { id: 6,  name: '6480 Genesis Crystals', price: 1560000,label: '' },
+    { id: 7,  name: 'Blessing of Welkin Moon', price: 79000, label: '✨ Special' },
+    { id: 8,  name: 'Gnostic Hymn',           price: 390000, label: '✨ Special' },
+  ],
+  'pubg mobile': [
+    { id: 1,  name: '60 UC',    price: 14999, label: '' },
+    { id: 2,  name: '120 UC',   price: 29999, label: '' },
+    { id: 3,  name: '325 UC',   price: 79999, label: '🔥 Populer' },
+    { id: 4,  name: '660 UC',   price: 159999,label: '💎 Best Value' },
+    { id: 5,  name: '1800 UC',  price: 399999,label: '' },
+    { id: 6,  name: '3850 UC',  price: 849999,label: '' },
+    { id: 7,  name: 'Royal Pass M-Tier', price: 149999, label: '✨ Special' },
+    { id: 8,  name: 'Royal Pass A-Tier', price: 299999, label: '✨ Special' },
+  ],
+  'honkai star rail': [
+    { id: 1, name: '60 Oneiric Shard',   price: 15000,  label: '' },
+    { id: 2, name: '300 Oneiric Shard',  price: 75000,  label: '🔥 Populer' },
+    { id: 3, name: '980 Oneiric Shard',  price: 240000, label: '💎 Best Value' },
+    { id: 4, name: '1980 Oneiric Shard', price: 480000, label: '' },
+    { id: 5, name: '3280 Oneiric Shard', price: 780000, label: '' },
+    { id: 6, name: 'Express Supply Pass', price: 79000, label: '✨ Special' },
+  ],
+  'valorant': [
+    { id: 1,  name: '475 VP',   price: 65000,  label: '' },
+    { id: 2,  name: '1000 VP',  price: 130000, label: '🔥 Populer' },
+    { id: 3,  name: '2050 VP',  price: 260000, label: '💎 Best Value' },
+    { id: 4,  name: '3650 VP',  price: 455000, label: '' },
+    { id: 5,  name: '5350 VP',  price: 650000, label: '' },
+    { id: 6,  name: '11000 VP', price: 1300000,label: '' },
+  ],
+  'clash of clans': [
+    { id: 1,  name: '80 Gems',   price: 14000,  label: '' },
+    { id: 2,  name: '500 Gems',  price: 79000,  label: '🔥 Populer' },
+    { id: 3,  name: '1200 Gems', price: 159000, label: '💎 Best Value' },
+    { id: 4,  name: '2500 Gems', price: 319000, label: '' },
+    { id: 5,  name: '6500 Gems', price: 799000, label: '' },
+    { id: 6,  name: '14000 Gems',price: 1599000,label: '' },
+  ],
 };
 
+// Ambil paket berdasarkan nama game (case-insensitive)
+function getDefaultPackages(gameName) {
+  if (!gameName) return [];
+  const key = gameName.toLowerCase();
+  // Cari exact match dulu
+  if (defaultPackages[key]) return defaultPackages[key];
+  // Cari partial match
+  for (const k of Object.keys(defaultPackages)) {
+    if (key.includes(k) || k.includes(key)) return defaultPackages[k];
+  }
+  return [];
+}
+
 const faqItems = [
-  { q: 'Cara Top Up ML di Takapedia?', a: 'Masukkan ID dan Server, pilih nominal diamond, pilih metode pembayaran, masukkan nomor WhatsApp, dan klik Pesan Sekarang.' },
-  { q: 'Metode Pembayaran untuk Top Up ML di Takapedia?', a: 'Kami menerima Coinpedia, QRIS, E-Wallet (GoPay, OVO, Dana), Virtual Account (BCA, Mandiri, BNI, BRI), dan Convenience Store.' },
-  { q: 'Mengapa Harus Top Up ML di Takapedia?', a: 'Takapedia menawarkan harga murah, proses otomatis, layanan 24/7, dan pembayaran yang aman & terpercaya.' },
+  { q: 'Bagaimana cara melakukan top up?', a: 'Masukkan ID dan Server game, pilih nominal yang diinginkan, pilih metode pembayaran, dan klik Beli Sekarang.' },
+  { q: 'Metode pembayaran apa yang tersedia?', a: 'Kami menerima QRIS, E-Wallet (GoPay, OVO, Dana, ShopeePay, LinkAja), Virtual Account (BCA, BNI, BRI, Mandiri, Permata), dan Minimarket (Alfamart, Indomaret).' },
+  { q: 'Berapa lama proses top up?', a: 'Item akan masuk ke akun Anda dalam 1-5 detik setelah pembayaran dikonfirmasi.' },
+  { q: 'Apakah top up di sini aman?', a: 'Ya, 100% aman. Kami adalah mitra resmi dari berbagai publisher game.' },
 ];
 
-export default function ProductDetail({ productId, onBack, onAddToCart, onAddTransaction, userId: propUserId, onBuyNow }) {
+export default function ProductDetail({ productId, onBack, onAddToCart, onAddTransaction, userId: propUserId, onBuyNow, currentCoins, onCoinsChange }) {
   const [userId, setUserId] = useState('');
   const [server, setServer] = useState('');
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -63,6 +119,7 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
   const [loading, setLoading] = useState(true);
   const [buyProcessing, setBuyProcessing] = useState(false);
   const [buySuccess, setBuySuccess] = useState(false);
+  const [packages, setPackages] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -73,21 +130,40 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
           .select('*')
           .eq('id', productId)
           .single();
-        
         if (error) throw error;
         setProduct(data);
+
+        // Coba fetch paket dari Supabase dulu
+        const { data: pkgData } = await supabase
+          .from('product_packages')
+          .select('*')
+          .eq('product_id', productId)
+          .order('sort_order', { ascending: true });
+
+        if (pkgData && pkgData.length > 0) {
+          // Pakai data dari Supabase (admin sudah set custom packages)
+          setPackages(pkgData.map(p => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            label: p.label || '',
+            icon_url: p.icon_url || null,
+          })));
+        } else {
+          // Fallback ke paket default berdasarkan nama game
+          setPackages(getDefaultPackages(data?.name));
+        }
       } catch (err) {
         console.error('Error fetching product:', err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [productId]);
 
   const totalPrice = selectedPackage
-    ? `Rp ${(parseInt(selectedPackage.price.replace(/\D/g, '')) * qty).toLocaleString('id-ID')}`
+    ? `Rp ${(selectedPackage.price * qty).toLocaleString('id-ID')}`
     : null;
 
   return (
@@ -190,16 +266,25 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
               <span className="pd-step-title">Pilih Nominal</span>
             </div>
             <div className="pd-packages-grid">
-              {mlbbPackages.map(pkg => (
+              {packages.length === 0 ? (
+                <div style={{gridColumn:'1/-1',textAlign:'center',padding:'24px',color:'#94a3b8'}}>
+                  Belum ada paket tersedia.
+                </div>
+              ) : packages.map(pkg => (
                 <div
                   key={pkg.id}
                   className={`pd-pkg-card ${selectedPackage?.id === pkg.id ? 'selected' : ''}`}
                   onClick={() => setSelectedPackage(pkg)}
                 >
                   {pkg.label && <span className="pd-pkg-label">{pkg.label}</span>}
-                  <div className="pd-pkg-icon">💎</div>
-                  <div className="pd-pkg-diamonds">{pkg.diamonds} Diamonds</div>
-                  <div className="pd-pkg-price">{pkg.price}</div>
+                  <div className="pd-pkg-icon">
+                    {pkg.icon_url
+                      ? <img src={pkg.icon_url} alt={pkg.name} style={{width:32,height:32,objectFit:'contain'}} />
+                      : <span>💎</span>
+                    }
+                  </div>
+                  <div className="pd-pkg-diamonds">{pkg.name}</div>
+                  <div className="pd-pkg-price">Rp {Number(pkg.price).toLocaleString('id-ID')}</div>
                   <button className="pd-pkg-btn">
                     <ShoppingCart size={12} /> Tambah
                   </button>
@@ -441,7 +526,7 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
               <div className="pd-order-detail">
                 <div className="pd-order-row">
                   <span className="pd-order-label">Produk</span>
-                  <span className="pd-order-val">{selectedPackage.diamonds} Diamonds</span>
+                  <span className="pd-order-val">{selectedPackage.name}</span>
                 </div>
                 <div className="pd-order-row">
                   <span className="pd-order-label">Qty</span>
@@ -488,14 +573,25 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
             <div className="pd-order-actions">
               <button
                 className="pd-cart-btn"
-                disabled={!selectedPackage}
+                disabled={!selectedPackage || buySuccess}
                 onClick={() => {
+                  if (!userId.trim()) {
+                    toast.warning('⚠ Masukkan ID akun Game terlebih dahulu!');
+                    document.querySelector('.pd-input[placeholder="Masukkan ID"]')?.focus();
+                    return;
+                  }
+                  if (!server.trim()) {
+                    toast.warning('⚠ Masukkan Server terlebih dahulu!');
+                    document.querySelector('.pd-input[placeholder="Masukkan Server"]')?.focus();
+                    return;
+                  }
+                  if (!selectedPackage) return toast.warning('Pilih nominal terlebih dahulu.');
                   onAddToCart({
                     id: Date.now(),
                     game: product?.name || 'Game',
-                    package: selectedPackage.diamonds,
+                    package: selectedPackage.name,
                     qty: qty,
-                    price: selectedPackage.price,
+                    price: `Rp ${Number(selectedPackage.price).toLocaleString('id-ID')}`,
                     totalPrice: totalPrice,
                     image: product?.image_url || '/mlbb.png'
                   });
@@ -509,23 +605,47 @@ export default function ProductDetail({ productId, onBack, onAddToCart, onAddTra
                 disabled={!selectedPackage || !selectedPayment || buyProcessing}
                 onClick={async () => {
                   if (!selectedPackage) return toast.warning('Pilih nominal terlebih dahulu.');
+                  if (!userId.trim()) {
+                    toast.warning('⚠ Masukkan ID akun Game terlebih dahulu!');
+                    document.querySelector('.pd-input[placeholder="Masukkan ID"]')?.focus();
+                    return;
+                  }
+                  if (!server.trim()) {
+                    toast.warning('⚠ Masukkan Server terlebih dahulu!');
+                    document.querySelector('.pd-input[placeholder="Masukkan Server"]')?.focus();
+                    return;
+                  }
                   if (!selectedPayment) return toast.warning('Pilih metode pembayaran terlebih dahulu.');
+                  
+                  const totalPriceNum = selectedPackage.price * qty;
+                  if (selectedPayment === 'coinpedia') {
+                    if (currentCoins < totalPriceNum) {
+                      return toast.error('Koin Gamora Anda tidak mencukupi untuk pembelian ini!');
+                    }
+                  }
+
                   setBuyProcessing(true);
                   try {
                     // Simulasi proses 1.5 detik
                     await new Promise(r => setTimeout(r, 1500));
+                    
+                    // Kurangi koin jika pakai coinpedia
+                    if (selectedPayment === 'coinpedia' && onCoinsChange) {
+                      await onCoinsChange(-totalPriceNum);
+                    }
+
                     // Simpan transaksi ke Supabase
                     if (onAddTransaction) {
                       await onAddTransaction({
                         game: product?.name || 'Game',
-                        item_name: selectedPackage.diamonds,
-                        price: parseInt(selectedPackage.price.replace(/\D/g, '')),
+                        item_name: selectedPackage.name,
+                        price: totalPriceNum,
                         status: 'success',
                         image_url: product?.image_url || null,
                       });
                     }
                     setBuySuccess(true);
-                    toast.success(`Berhasil! ${selectedPackage.diamonds} ${product?.name || ''} sedang diproses. 🎉`);
+                    toast.success(`Berhasil! ${selectedPackage.name} untuk ${product?.name || ''} sedang diproses. 🎉`);
                   } catch (err) {
                     toast.error('Gagal memproses: ' + err.message);
                   } finally {

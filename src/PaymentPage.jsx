@@ -6,6 +6,12 @@ import './PaymentPage.css';
 
 const paymentMethods = [
   {
+    group: 'Gamora Coins',
+    methods: [
+      { id: 'coins', name: 'Gamora Coins', img: null, emoji: '⭐', fee: 0, isCoins: true },
+    ]
+  },
+  {
     group: 'Transfer Bank',
     methods: [
       { id: 'bca',     name: 'BCA Virtual Account',           img: '/payment/bca.png',      fee: 0 },
@@ -40,7 +46,7 @@ const paymentMethods = [
   },
 ];
 
-export default function PaymentPage({ cartItems, user, onBack, onSuccess, addTransaction }) {
+export default function PaymentPage({ cartItems, user, onBack, onSuccess, addTransaction, coins, onCoinsChange }) {
   // Pre-select payment method jika sudah dipilih dari ProductDetail
   const preSelected = cartItems.length === 1 && cartItems[0].paymentMethod
     ? cartItems[0].paymentMethod.toLowerCase()
@@ -75,12 +81,24 @@ export default function PaymentPage({ cartItems, user, onBack, onSuccess, addTra
 
   const handlePay = async () => {
     if (!selectedMethod) return toast.warning('Pilih metode pembayaran terlebih dahulu.');
+
+    // Validasi coins jika pakai Gamora Coins
+    if (selectedMethod === 'coins') {
+      if ((coins || 0) < total) {
+        toast.error(`Coins tidak cukup! Kamu punya ${(coins||0).toLocaleString('id-ID')} Coins, butuh ${total.toLocaleString('id-ID')} Coins.`);
+        return;
+      }
+    }
+
     setProcessing(true);
     setStep('confirm');
-    // Simulasi processing 2 detik
     await new Promise(r => setTimeout(r, 2000));
     try {
-      // Catat semua item sebagai transaksi
+      // Kurangi coins jika bayar pakai coins
+      if (selectedMethod === 'coins' && onCoinsChange) {
+        onCoinsChange(-total); // delta negatif = kurangi
+      }
+
       for (const item of cartItems) {
         if (addTransaction) {
           await addTransaction({
@@ -250,8 +268,18 @@ export default function PaymentPage({ cartItems, user, onBack, onSuccess, addTra
                       }
                     </div>
                     <div className="pay-method-info">
-                      <div className="pay-method-name">{m.name}</div>
+                      <div className="pay-method-name">
+                        {m.name}
+                        {m.isCoins && <span style={{marginLeft:8,fontSize:'0.75rem',color:'#6366f1',fontWeight:700}}>
+                          Saldo: ⭐ {(coins||0).toLocaleString('id-ID')}
+                        </span>}
+                      </div>
                       {m.fee > 0 && <div className="pay-method-fee">+Rp {m.fee.toLocaleString('id-ID')} admin</div>}
+                      {m.isCoins && (coins||0) < total && (
+                        <div style={{fontSize:'0.72rem',color:'#ef4444',fontWeight:600}}>
+                          ⚠ Coins tidak cukup
+                        </div>
+                      )}
                     </div>
                     {selectedMethod === m.id && <CheckCircle2 size={18} color="#6366f1" />}
                   </label>

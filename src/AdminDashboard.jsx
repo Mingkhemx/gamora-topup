@@ -8,6 +8,138 @@ import { supabase } from './supabaseClient';
 import { toast, confirm, alert } from './AlertSystem.jsx';
 import './AdminDashboard.css';
 
+// ── Edit-inline row untuk paket ──────────────────────────────
+function PkgRow({ pkg, onDelete, onUpdate }) {
+  const [editing, setEditing] = React.useState(false);
+  const [val, setVal] = React.useState({ name: pkg.name, price: pkg.price, label: pkg.label || '', iconFile: null });
+  const [saving, setSaving] = React.useState(false);
+
+  const save = async () => {
+    if (!val.name || !val.price) return;
+    setSaving(true);
+    let icon_url = pkg.icon_url || null;
+
+    // Upload icon baru jika ada file dipilih
+    if (val.iconFile) {
+      try {
+        const f = val.iconFile;
+        const ext = f.name.split('.').pop();
+        const fname = `pkg_icon_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: upErr } = await supabase.storage.from('products').upload(fname, f);
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(fname);
+        icon_url = publicUrl;
+      } catch (err) {
+        console.error('Icon upload error:', err);
+      }
+    }
+
+    await onUpdate({ name: val.name, price: val.price, label: val.label, icon_url });
+    setSaving(false);
+    setEditing(false);
+    setVal(v => ({ ...v, iconFile: null }));
+  };
+
+  const iconSrc = val.iconFile ? URL.createObjectURL(val.iconFile) : pkg.icon_url;
+
+  if (editing) {
+    return (
+      <div style={{padding:'12px 14px',background:'#faf5ff',borderRadius:10,border:'1.5px solid #818cf8'}}>
+        <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr',gap:8,marginBottom:10}}>
+          <input
+            value={val.name}
+            onChange={e => setVal({...val, name: e.target.value})}
+            style={{padding:'7px 10px',borderRadius:8,border:'1.5px solid #c7d2fe',fontSize:'0.85rem',fontFamily:'inherit'}}
+            placeholder="Nama paket"
+          />
+          <input
+            type="number"
+            value={val.price}
+            onChange={e => setVal({...val, price: Number(e.target.value)})}
+            style={{padding:'7px 10px',borderRadius:8,border:'1.5px solid #c7d2fe',fontSize:'0.85rem',fontFamily:'inherit'}}
+            placeholder="Harga"
+          />
+          <input
+            value={val.label}
+            onChange={e => setVal({...val, label: e.target.value})}
+            style={{padding:'7px 10px',borderRadius:8,border:'1.5px solid #c7d2fe',fontSize:'0.85rem',fontFamily:'inherit'}}
+            placeholder="Label"
+          />
+        </div>
+
+        {/* Icon upload area */}
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:10,padding:'10px 12px',background:'#fff',borderRadius:8,border:'1px solid #ddd6fe'}}>
+          <div style={{
+            width:44,height:44,borderRadius:8,background:'#f1f5f9',
+            overflow:'hidden',flexShrink:0,display:'flex',
+            alignItems:'center',justifyContent:'center',border:'1px solid #e2e8f0'
+          }}>
+            {iconSrc
+              ? <img src={iconSrc} style={{width:'100%',height:'100%',objectFit:'contain'}} alt="" />
+              : <span style={{fontSize:'1.4rem'}}>💎</span>
+            }
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:'0.75rem',fontWeight:700,color:'#6366f1',marginBottom:4}}>Ganti Icon Paket</div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => setVal({...val, iconFile: e.target.files[0] || null})}
+              style={{fontSize:'0.78rem',color:'#475569',width:'100%'}}
+            />
+          </div>
+          {val.iconFile && (
+            <button onClick={() => setVal({...val, iconFile: null})}
+              style={{background:'#fee2e2',color:'#b91c1c',border:'none',borderRadius:6,padding:'4px 8px',fontSize:'0.75rem',cursor:'pointer'}}>
+              ✕
+            </button>
+          )}
+        </div>
+
+        <div style={{display:'flex',gap:6}}>
+          <button
+            onClick={save}
+            disabled={saving}
+            style={{padding:'7px 18px',background:'#6366f1',color:'#fff',border:'none',borderRadius:8,fontSize:'0.82rem',fontWeight:700,cursor:'pointer',opacity:saving?0.7:1}}
+          >
+            {saving ? '⏳ Menyimpan...' : '✓ Simpan'}
+          </button>
+          <button
+            onClick={() => { setEditing(false); setVal(v=>({...v,iconFile:null})); }}
+            style={{padding:'7px 14px',background:'#f1f5f9',color:'#64748b',border:'none',borderRadius:8,fontSize:'0.82rem',fontWeight:600,cursor:'pointer'}}
+          >
+            Batal
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{display:'flex',alignItems:'center',gap:12,padding:'10px 14px',background:'#fff',borderRadius:10,border:'1px solid #e2e8f0'}}>
+      <div style={{width:40,height:40,borderRadius:8,background:'#f8fafc',overflow:'hidden',flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid #e2e8f0'}}>
+        {pkg.icon_url
+          ? <img src={pkg.icon_url} style={{width:'100%',height:'100%',objectFit:'contain'}} alt={pkg.name} />
+          : <span style={{fontSize:'1.3rem'}}>💎</span>
+        }
+      </div>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontWeight:700,fontSize:'0.9rem',color:'#0f172a',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{pkg.name}</div>
+        <div style={{fontSize:'0.78rem',color:'#64748b',marginTop:2,display:'flex',alignItems:'center',gap:6}}>
+          Rp {Number(pkg.price).toLocaleString('id-ID')}
+          {pkg.label && <span style={{background:'#ede9fe',color:'#5b21b6',padding:'1px 8px',borderRadius:100,fontSize:'0.68rem',fontWeight:700}}>{pkg.label}</span>}
+        </div>
+      </div>
+      <button onClick={() => setEditing(true)} style={{padding:'5px 12px',background:'#f0f9ff',color:'#0369a1',border:'none',borderRadius:8,fontSize:'0.78rem',fontWeight:700,cursor:'pointer',flexShrink:0}}>
+        ✏ Edit
+      </button>
+      <button onClick={onDelete} style={{padding:'5px 12px',background:'#fee2e2',color:'#b91c1c',border:'none',borderRadius:8,fontSize:'0.78rem',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',gap:4,flexShrink:0}}>
+        <Trash2 size={13} /> Hapus
+      </button>
+    </div>
+  );
+}
+
 export default function AdminDashboard({ onExit }) {
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -56,6 +188,12 @@ export default function AdminDashboard({ onExit }) {
   const [usersLoading, setUsersLoading] = useState(false);
   const [userSearch, setUserSearch] = useState('');
 
+  // Package Management State
+  const [managingPackageProduct, setManagingPackageProduct] = useState(null);
+  const [productPackages, setProductPackages] = useState([]);
+  const [newPkg, setNewPkg] = useState({ name: '', price: '', label: '', icon_url: '', iconFile: null });
+  const [pkgLoading, setPkgLoading] = useState(false);
+
   useEffect(() => {
     if (activeMenu === 'banners') fetchBanners();
     if (activeMenu === 'products') fetchProducts();
@@ -103,6 +241,141 @@ export default function AdminDashboard({ onExit }) {
     } finally {
       setUsersLoading(false);
     }
+  };
+
+  // ── PACKAGE FUNCTIONS ────────────────────────────────────
+  const fetchPackages = async (productId) => {
+    setPkgLoading(true);
+    const { data } = await supabase
+      .from('product_packages')
+      .select('*')
+      .eq('product_id', productId)
+      .order('sort_order', { ascending: true });
+    setProductPackages(data || []);
+    setPkgLoading(false);
+  };
+
+  const addPackage = async () => {
+    if (!newPkg.name || !newPkg.price) return toast.warning('Nama dan harga paket wajib diisi!');
+    let iconUrl = newPkg.icon_url || null;
+
+    // Upload icon jika ada file
+    if (newPkg.iconFile) {
+      const f = newPkg.iconFile;
+      const ext = f.name.split('.').pop();
+      const fname = `pkg_icon_${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('products').upload(fname, f);
+      if (!upErr) {
+        const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(fname);
+        iconUrl = publicUrl;
+      }
+    }
+
+    const { error } = await supabase.from('product_packages').insert({
+      product_id: managingPackageProduct.id,
+      name: newPkg.name,
+      price: Number(newPkg.price),
+      label: newPkg.label || null,
+      icon_url: iconUrl,
+      sort_order: productPackages.length,
+    });
+    if (error) return toast.error('Gagal menambah: ' + error.message);
+    toast.success('Paket berhasil ditambahkan!');
+    setNewPkg({ name: '', price: '', label: '', icon_url: '', iconFile: null });
+    fetchPackages(managingPackageProduct.id);
+  };
+
+  const deletePackage = async (id) => {
+    const ok = await confirm('Hapus paket ini?', 'Hapus Paket');
+    if (!ok) return;
+    const { error } = await supabase.from('product_packages').delete().eq('id', id);
+    if (error) return toast.error('Gagal menghapus: ' + error.message);
+    toast.success('Paket dihapus.');
+    fetchPackages(managingPackageProduct.id);
+  };
+
+  // Import paket default MLBB (atau game lain) ke Supabase sekaligus
+  const seedDefaultPackages = async (gameName) => {
+    const defaults = {
+      'mobile legends': [
+        { name: '5 (+1) Diamonds', price: 1428, label: '' },
+        { name: '12 (+2) Diamonds', price: 3000, label: '' },
+        { name: '19 (+5) Diamonds', price: 4999, label: '' },
+        { name: '28 (+7) Diamonds', price: 7000, label: '' },
+        { name: '55 (+10) Diamonds', price: 13999, label: '' },
+        { name: '86 (+20) Diamonds', price: 20000, label: '🔥 Populer' },
+        { name: '172 (+35) Diamonds', price: 40000, label: '' },
+        { name: '257 (+55) Diamonds', price: 60000, label: '' },
+        { name: '344 (+70) Diamonds', price: 79999, label: '' },
+        { name: '429 (+86) Diamonds', price: 99000, label: '' },
+        { name: '514 (+103) Diamonds', price: 120000, label: '' },
+        { name: '600 (+120) Diamonds', price: 139000, label: '💎 Best Value' },
+        { name: '706 (+141) Diamonds', price: 163000, label: '' },
+        { name: '878 (+176) Diamonds', price: 203000, label: '' },
+        { name: '1050 (+210) Diamonds', price: 242000, label: '' },
+        { name: '2195 (+439) Diamonds', price: 507000, label: '' },
+        { name: '4829 (+966) Diamonds', price: 1117000, label: '' },
+        { name: 'Weekly Diamond Pass', price: 21500, label: '✨ Special' },
+        { name: 'Twilight Pass', price: 115000, label: '✨ Special' },
+      ],
+      'free fire': [
+        { name: '5 Diamonds', price: 1000, label: '' },
+        { name: '12 Diamonds', price: 2400, label: '' },
+        { name: '50 Diamonds', price: 9999, label: '' },
+        { name: '70 Diamonds', price: 13999, label: '🔥 Populer' },
+        { name: '140 Diamonds', price: 27999, label: '' },
+        { name: '355 Diamonds', price: 69999, label: '💎 Best Value' },
+        { name: '720 Diamonds', price: 139999, label: '' },
+        { name: '1450 Diamonds', price: 279999, label: '' },
+        { name: 'Weekly Membership', price: 29999, label: '✨ Special' },
+        { name: 'Monthly Membership', price: 109999, label: '✨ Special' },
+      ],
+      'genshin impact': [
+        { name: '60 Genesis Crystals', price: 15000, label: '' },
+        { name: '300 Genesis Crystals', price: 75000, label: '🔥 Populer' },
+        { name: '980 Genesis Crystals', price: 240000, label: '💎 Best Value' },
+        { name: '1980 Genesis Crystals', price: 480000, label: '' },
+        { name: '3280 Genesis Crystals', price: 780000, label: '' },
+        { name: '6480 Genesis Crystals', price: 1560000, label: '' },
+        { name: 'Blessing of Welkin Moon', price: 79000, label: '✨ Special' },
+        { name: 'Gnostic Hymn', price: 390000, label: '✨ Special' },
+      ],
+      'pubg mobile': [
+        { name: '60 UC', price: 14999, label: '' },
+        { name: '120 UC', price: 29999, label: '' },
+        { name: '325 UC', price: 79999, label: '🔥 Populer' },
+        { name: '660 UC', price: 159999, label: '💎 Best Value' },
+        { name: '1800 UC', price: 399999, label: '' },
+        { name: '3850 UC', price: 849999, label: '' },
+        { name: 'Royal Pass M-Tier', price: 149999, label: '✨ Special' },
+        { name: 'Royal Pass A-Tier', price: 299999, label: '✨ Special' },
+      ],
+    };
+
+    const key = (gameName || '').toLowerCase();
+    let pkgs = defaults[key];
+    if (!pkgs) {
+      for (const k of Object.keys(defaults)) {
+        if (key.includes(k) || k.includes(key)) { pkgs = defaults[k]; break; }
+      }
+    }
+    if (!pkgs) return toast.warning('Tidak ada data default untuk game ini. Tambahkan manual.');
+
+    const ok = await confirm(`Import ${pkgs.length} paket default untuk "${gameName}"? Paket yang sudah ada akan tetap ada.`, 'Import Paket Default');
+    if (!ok) return;
+
+    const rows = pkgs.map((p, i) => ({
+      product_id: managingPackageProduct.id,
+      name: p.name,
+      price: p.price,
+      label: p.label || null,
+      sort_order: productPackages.length + i,
+    }));
+
+    const { error } = await supabase.from('product_packages').insert(rows);
+    if (error) return toast.error('Gagal import: ' + error.message);
+    toast.success(`${pkgs.length} paket berhasil diimport!`);
+    fetchPackages(managingPackageProduct.id);
   };
 
   const fetchDashboardStats = async () => {
@@ -843,9 +1116,22 @@ export default function AdminDashboard({ onExit }) {
                             <td>{p.category === 'lagi-populer' ? '🔥 Populer' : p.category === 'voucher' ? 'Voucher' : 'Top Up Langsung'}</td>
                             <td>{p.has_cashback ? <span className="admin-status-badge success">Cashback</span> : <span className="admin-status-badge neutral">Reguler</span>}</td>
                             <td>
-                              <button onClick={(e) => deleteProduct(p.id, e)} className="admin-action-delete">
-                                <Trash2 size={16} /> Hapus
-                              </button>
+                              <div style={{display:'flex',gap:6}}>
+                                <button
+                                  onClick={() => { setManagingPackageProduct(p); fetchPackages(p.id); }}
+                                  style={{
+                                    display:'inline-flex',alignItems:'center',gap:5,
+                                    padding:'6px 12px',borderRadius:8,border:'none',
+                                    background:'#ede9fe',color:'#5b21b6',
+                                    fontSize:'0.78rem',fontWeight:700,cursor:'pointer'
+                                  }}
+                                >
+                                  📦 Paket
+                                </button>
+                                <button onClick={(e) => deleteProduct(p.id, e)} className="admin-action-delete">
+                                  <Trash2 size={16} /> Hapus
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))
@@ -855,6 +1141,141 @@ export default function AdminDashboard({ onExit }) {
                 </div>
               </div>
             </>
+          )}
+
+          {/* ── PACKAGE MANAGEMENT MODAL ──────────────────────── */}
+          {managingPackageProduct && (
+            <div className="admin-modal-overlay" onClick={() => setManagingPackageProduct(null)}>
+              <div className="admin-modal" onClick={e => e.stopPropagation()} style={{maxWidth:600}}>
+                <div className="admin-modal-header">
+                  <h2>📦 Paket — {managingPackageProduct.name}</h2>
+                  <button className="admin-modal-close" onClick={() => setManagingPackageProduct(null)}>✕</button>
+                </div>
+                <div className="admin-modal-body">
+
+                  {/* Form tambah paket */}
+                  <div style={{background:'#f8fafc',borderRadius:12,padding:16,marginBottom:20,border:'1px solid #e2e8f0'}}>
+                    <div style={{fontWeight:700,fontSize:'0.85rem',color:'#374151',marginBottom:12}}>+ Tambah Paket Baru</div>
+                    <div className="admin-form-row">
+                      <div className="admin-form-group" style={{flex:2}}>
+                        <label>Nama Paket *</label>
+                        <input
+                          type="text"
+                          placeholder="cth: 86 (+20) Diamonds"
+                          value={newPkg.name}
+                          onChange={e => setNewPkg({...newPkg, name: e.target.value})}
+                        />
+                      </div>
+                      <div className="admin-form-group">
+                        <label>Harga (Rp) *</label>
+                        <input
+                          type="number"
+                          placeholder="20000"
+                          value={newPkg.price}
+                          onChange={e => setNewPkg({...newPkg, price: e.target.value})}
+                        />
+                      </div>
+                      <div className="admin-form-group">
+                        <label>Label (opsional)</label>
+                        <input
+                          type="text"
+                          placeholder="🔥 Populer"
+                          value={newPkg.label}
+                          onChange={e => setNewPkg({...newPkg, label: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Upload icon */}
+                    <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:10,padding:'10px 12px',background:'#fff',borderRadius:10,border:'1.5px dashed #e2e8f0'}}>
+                      {/* Preview */}
+                      <div style={{
+                        width:44,height:44,borderRadius:10,
+                        background:'#f1f5f9',border:'1px solid #e2e8f0',
+                        display:'flex',alignItems:'center',justifyContent:'center',
+                        overflow:'hidden',flexShrink:0
+                      }}>
+                        {newPkg.iconFile
+                          ? <img src={URL.createObjectURL(newPkg.iconFile)} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                          : <span style={{fontSize:'1.4rem'}}>💎</span>
+                        }
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:'0.78rem',fontWeight:700,color:'#374151',marginBottom:4}}>Icon Paket (opsional)</div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={e => setNewPkg({...newPkg, iconFile: e.target.files[0] || null})}
+                          style={{fontSize:'0.78rem',color:'#64748b',width:'100%'}}
+                        />
+                      </div>
+                      {newPkg.iconFile && (
+                        <button
+                          onClick={() => setNewPkg({...newPkg, iconFile: null})}
+                          style={{background:'#fee2e2',color:'#b91c1c',border:'none',borderRadius:6,padding:'4px 8px',fontSize:'0.75rem',cursor:'pointer'}}
+                        >✕</button>
+                      )}
+                    </div>
+
+                    <div style={{display:'flex',gap:8,marginTop:8}}>
+                      <button className="admin-add-btn" onClick={addPackage}>
+                        + Tambah Paket
+                      </button>
+                      <button
+                        onClick={() => seedDefaultPackages(managingPackageProduct.name)}
+                        style={{
+                          display:'inline-flex',alignItems:'center',gap:6,
+                          padding:'10px 18px',borderRadius:10,border:'1.5px dashed #6366f1',
+                          background:'transparent',color:'#4f46e5',
+                          fontSize:'0.82rem',fontWeight:700,cursor:'pointer'
+                        }}
+                      >
+                        ⬇ Import Paket Default
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Daftar paket */}
+                  <div style={{fontWeight:700,fontSize:'0.85rem',color:'#374151',marginBottom:10}}>
+                    Paket Tersedia ({productPackages.length})
+                  </div>
+                  {pkgLoading ? (
+                    <div style={{textAlign:'center',padding:24,color:'#94a3b8'}}>Memuat...</div>
+                  ) : productPackages.length === 0 ? (
+                    <div style={{
+                      textAlign:'center',padding:32,background:'#f8fafc',
+                      borderRadius:12,border:'1.5px dashed #e2e8f0',color:'#94a3b8'
+                    }}>
+                      <div style={{fontSize:'2rem',marginBottom:8}}>📭</div>
+                      <div style={{fontWeight:600}}>Belum ada paket.</div>
+                      <div style={{fontSize:'0.8rem',marginTop:4}}>Klik "Import Paket Default" untuk isi otomatis, atau tambah manual.</div>
+                    </div>
+                  ) : (
+                    <div style={{display:'flex',flexDirection:'column',gap:8,maxHeight:360,overflowY:'auto'}}>
+                      {productPackages.map(pkg => (
+                        <PkgRow
+                          key={pkg.id}
+                          pkg={pkg}
+                          onDelete={() => deletePackage(pkg.id)}
+                          onUpdate={async (updated) => {
+                            const { error } = await supabase
+                              .from('product_packages')
+                              .update({ name: updated.name, price: updated.price, label: updated.label, icon_url: updated.icon_url })
+                              .eq('id', pkg.id);
+                            if (error) toast.error('Gagal: ' + error.message);
+                            else { toast.success('Paket diperbarui!'); fetchPackages(managingPackageProduct.id); }
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{marginTop:16,padding:'10px 14px',background:'#f0f9ff',borderRadius:10,border:'1px solid #bae6fd',fontSize:'0.8rem',color:'#0369a1'}}>
+                    💡 Kalau tidak ada paket yang ditambahkan, sistem akan otomatis memakai paket default sesuai nama game.
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeMenu === 'banners' && (

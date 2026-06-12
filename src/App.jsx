@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, Bell, Gamepad2, MessageSquare, Settings, Gift, Star, 
   Zap, Ticket, BarChart3, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
-  Camera, Globe, Video, ShoppingCart, LogOut
+  Camera, Globe, Video, ShoppingCart, LogOut, User
 } from 'lucide-react';
 import './index.css';
 import ProductDetail from './ProductDetail';
@@ -344,6 +344,7 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('ID');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useT(currentLang);
 
   const [user, setUser] = useState(null);
@@ -821,8 +822,8 @@ function App() {
               </span>
             </div>
           ) : (
-            <div className="gamora-profile-btn" onClick={() => setAuthModalOpen(true)} style={{cursor: 'pointer', background: '#f0c000', padding: '0.4rem 1.2rem', borderRadius: '25px', marginLeft: '10px', display: 'flex', alignItems: 'center'}}>
-              <span style={{fontWeight: 700, color: '#fff', fontSize: '0.9rem'}}>{t('login_btn')}</span>
+            <div className="gamora-login-btn" onClick={() => setAuthModalOpen(true)}>
+              <span>{t('login_btn')}</span>
             </div>
           )}
         </div>
@@ -837,6 +838,8 @@ function App() {
             onAddToCart={(item) => setCartItems(prev => [...prev, item])}
             onAddTransaction={addTransaction}
             userId={user?.id}
+            currentCoins={coins}
+            onCoinsChange={handleCoinsChange}
           />
         </div>
       )}
@@ -985,10 +988,6 @@ function App() {
             <h2>{t('testi_title')}</h2>
             <p>{t('testi_sub')}</p>
           </div>
-          <div className="nav-arrows">
-            <button className="arrow-btn"><ChevronLeft size={20} /></button>
-            <button className="arrow-btn"><ChevronRight size={20} /></button>
-          </div>
         </div>
 
         <div className="grid-3">
@@ -1080,6 +1079,8 @@ function App() {
           cartItems={cartItems}
           user={user}
           addTransaction={addTransaction}
+          coins={coins}
+          onCoinsChange={handleCoinsChange}
           onBack={() => { setCurrentPage('beranda'); setIsCartOpen(true); }}
           onSuccess={() => {
             setCartItems([]);
@@ -1382,6 +1383,40 @@ function App() {
           setCurrentPage('payment');
         }}
       />
+
+      {/* MOBILE BOTTOM NAVIGATION BAR */}
+      <div className="mobile-bottom-nav">
+        <button 
+          className={`mobile-nav-item ${currentPage === 'beranda' && !currentProduct ? 'active' : ''}`} 
+          onClick={() => { setCurrentPage('beranda'); setCurrentProduct(null); }}
+        >
+          <Gamepad2 size={20} />
+          <span>Shop</span>
+        </button>
+        
+        <button 
+          className={`mobile-nav-item ${currentPage === 'transaksi' ? 'active' : ''}`} 
+          onClick={() => requireAuth(() => { setCurrentPage('transaksi'); setCurrentProduct(null); })}
+        >
+          <BarChart3 size={20} />
+          <span>Transaksi</span>
+        </button>
+
+        <button 
+          className={`mobile-nav-item ${currentPage === 'promo' ? 'active' : ''}`} 
+          onClick={() => requireAuth(() => { setCurrentPage('promo'); setCurrentProduct(null); })}
+        >
+          <Ticket size={20} />
+          <span>Promo</span>
+        </button>
+
+        <button 
+          className={`mobile-nav-item ${currentPage === 'gacha' ? 'active' : ''}`} 
+          onClick={() => requireAuth(() => { setCurrentPage('gacha'); setCurrentProduct(null); })}
+        >
+          <Gift size={20} />
+          <span>Gacha</span>
+        </button>      </div>
     </>
   );
 }
